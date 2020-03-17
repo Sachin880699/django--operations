@@ -1,0 +1,33 @@
+--------------------model.py-----------------------------------
+
+GENDER_CHOICES = (
+   ('male', 'Male'),
+   ('female', 'Female')
+)
+
+class Home(models.Model):
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=128)
+    
+--------------------------views.py-------------------------------
+
+from django.shortcuts import render
+from.forms import *
+from.models import *
+def home(request):
+    if request.method=='POST':
+        data = Home()
+        data.gender = request.POST['gender']
+
+        data.save()
+    return render(request,'home.html')
+    
+---------------------------------home.html---------------------------
+
+<form>
+</select><br>
+    <input type="radio" id="male" name="gender" value="male">
+  <label for="male">Male</label><br>
+  <input type="radio" id="female" name="gender" value="female">
+  <label for="female">Female</label><br>
+    <button type="submit">Submit</button>
+</form>

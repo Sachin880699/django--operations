@@ -1,0 +1,60 @@
+----------------------models.py---------------------------------
+
+
+from django.db import models
+
+
+COLOR_CHOICES = (
+    ('green','GREEN'),
+    ('blue', 'BLUE'),
+    ('red','RED'),
+
+)
+class Home(models.Model):
+    name = models.CharField(max_length=20)
+    color = models.CharField(max_length=6, choices=COLOR_CHOICES, default='green')
+    l_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+        
+        
+--------------------------forms.py--------------------------------
+from django import forms
+from.models import *
+
+class HomeForm(forms.ModelForm):
+    class Meta:
+        model = Home
+        fields = '__all__'
+
+--------------------------views.py----------------------------------------
+
+from django.shortcuts import render
+from.forms import *
+from.models import *
+def home(request):
+    if request.method=='POST':
+        data = Home()
+        data.name = request.POST['name']
+        data.l_name = request.POST['l_name']
+        data.color = request.POST['color']
+
+        data.save()
+    return render(request,'home.html')
+
+------------------------------home.html-----------------------------------
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" name="name">
+    <input type="text" name="l_name">
+
+    <label for="color">Choose color:</label>
+<select id="color" name="color">
+  <option value="green">GREEN</option>
+  <option value="blue">BLUE</option>
+  <option value="red">RED</option>
+
+</select>
+    <button type="submit">Submit</button>
+</form>

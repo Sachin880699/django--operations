@@ -1,0 +1,107 @@
+---------------------views.py----------------------------------------
+
+from django.contrib.auth.models import User
+from django.contrib import auth
+
+
+def signup(request):
+    if request.method == 'POST':
+        if request.POST['password1'] == request.POST['password2']:
+            try:
+                user = User.objects.get(username=request.POST['username'])
+                return render(request, 'signup.html', {'error':'Username is already taken'})
+            except User.DoesNotExist:
+                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
+                auth.login(request, user)
+                return redirect('home')
+
+        else:
+            return render(request, 'signup.html', {'error':'Password doesn\'t matched'})
+
+    else:
+        return render(request, 'signup.html')
+        
+-----------------------------------signup.html------------------------------
+
+
+{{ error }}<br />
+<form  method="POST" action="{% url 'signup' %}">
+{% csrf_token %}
+
+Username: <br />
+<input type="text" name="username" />
+<br /><br />
+Password : <br />
+<input type="password" name="password1" /><br /><br />
+Confirm Password: <br />
+<input type="password" name="password2" /><br /><br />
+<input class="btn btn-primary" type="submit" value="Sign Up!" />
+</form>
+
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+
+                                login
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+
+
+
+
+---------------------------------views.py----------------------------------
+
+def login(request):
+    if request.method == 'POST':
+        user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
+        if user is not None:
+            auth.login(request, user)
+            return redirect('home')
+        else:
+            return render(request, 'login.html', {'error':'username or password is incorrect!'})
+
+    else:
+        return render(request, 'login.html')
+
+--------------------------------------------login.html-------------------------
+
+<h1> Login</h1>
+
+{{ error }}<br />
+<form  method="POST" action="{% url 'login' %}">
+{% csrf_token %}
+
+Username: <br />
+<input type="text" name="username" />
+<br /><br />
+Password : <br />
+<input type="password" name="password" /><br /><br />
+
+<input class="btn btn-primary" type="submit" value="Login" />
+</form>
+
+
+------------------------------------logout----------------------------
+
+-------------------------------------views.py------------------------
+
+def logout(request):
+    if request.method == 'POST':
+        auth.logout(request)
+        return redirect('home')
+        
+        
+---------------------------------in navbar ----------------------
+
+
+{% if user.is_authenticated %}
+                <a class="nav-item nav-link" href="{% url 'home' %}"><i class="fa fa-plus"></i></a>
+              <a class="nav-item nav-link" href="javascript:{document.getElementById('logout').submit()}">Logout</a>
+              <form id="logout" method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <input type="hidden" />
+              </form>
+            {% else %}
+            <a class="nav-item nav-link" href="{% url 'signup' %}">Sign up</a>
+            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+
+            {% endif %}

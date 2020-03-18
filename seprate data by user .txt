@@ -1,0 +1,45 @@
+---------------------------models.py---------------------------------
+
+from django.contrib.auth.models import User
+
+
+class works(models.Model):
+    title = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete="CASCADE", null=True)
+    
+    
+
+-------------------------------------views.py---------
+
+from  django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login,logout,authenticate
+from django.contrib import auth
+
+
+def home(request):
+    if User.is_active:
+        #user=request.User
+        name=request.user
+        
+        data=works.objects.all()
+        data  = works.objects.filter(user=request.user)
+        
+        print("user is active")
+
+        return render(request,'home.html',{'data':data})
+    else:
+        print("user is not active")
+        return render(request,"login.html")
+        
+ -------------------------home.html------------------------------
+ 
+ 
+ {% for data in data %}
+<h4>{{data.title}}</h4>
+<h4>{{data.description}}</h4>
+<h4>{{data.created_date}}</h4>
+<h4>{{data.criticality}}</h4>
+<h4>{{data.status}}</h4>
+
+{% endfor %}
+

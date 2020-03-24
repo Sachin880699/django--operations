@@ -1,0 +1,108 @@
+------------------------------------------------------Django search bar----------------------------
+
+1 )  py manage.py startapp search 
+
+
+
+----------------------------main_project/urls.py----------------------------------------------
+
+from django.conf.urls import url, include
+from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf import settings
+
+
+urlpatterns = [
+    url(r'^search/', include('search.urls', namespace='search')),
+   
+]
+
+if settings.DEBUG:
+    urlpatterns= urlpatterns + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+    
+
+
+
+---------------------------------------------------myapp/urls.py----------------------------------------
+
+path('search',views.searchposts, name='searchposts'),
+
+
+
+--------------------------------------------Models.py---------------------------------------------------
+
+class Post(models.Model):
+    title= models.CharField(max_length=300)
+    slug= models.SlugField(max_length=300, unique=True, blank=True)
+    content= models.TextField()
+    pub_date = models.DateTimeField(auto_now_add= True)
+    last_edited= models.DateTimeField(auto_now= True)
+    image = models.ImageField(upload_to="image")
+    likes= models.IntegerField(default=0)
+    dislikes= models.IntegerField(default=0)
+
+
+    def __str__(self):
+        return self.title
+
+
+------------------------------------------------------search.html-----------------------------------
+
+<h1>Search Page</h1>
+
+<br/>
+<form action=" " method="GET" value="{{request.GET.q}}">
+Search <input type="text" name="q" value="{{request.GET.q}}" placeholder="Search posts"/>
+<input type="submit" name="submit" value="Search"/>
+</form>
+
+
+{% if submitbutton == 'Search' and request.GET.q != '' %}
+{% if results %}
+<h1>Results for <b>{{ request.GET.q }}</b></h1>
+<br/><br/>
+
+{% for result in results %}
+
+{{result.title}}
+<img src="{{result.image.url}}" height="200px" width="200px">
+<br/>
+
+{{result.content}}
+<br/>
+
+{% endfor %}
+{% else %}
+No search results for this query
+{% endif %}
+{% endif %}
+
+-------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------views.py-----------------------------------------------
+from django.shortcuts import render
+from.models import *
+from django.db.models import Q
+
+
+def searchposts(request):
+    if request.method == 'GET':
+        query= request.GET.get('q')
+
+        submitbutton= request.GET.get('submit')
+
+        if query is not None:
+            lookups= Q(title__icontains=query) | Q(content__icontains=query)
+
+            results= Post.objects.filter(lookups).distinct()
+
+            context={'results': results,
+                     'submitbutton': submitbutton}
+
+            return render(request, 'search.html', context)
+
+        else:
+            return render(request, 'search.html')
+
+    else:
+        return render(request, 'search.html')

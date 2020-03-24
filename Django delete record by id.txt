@@ -1,0 +1,79 @@
+================================================================================
+                              Models.py
+
+from django.db import models
+
+class Home(models.Model):
+    id = models.IntegerField(primary_key=1)
+    name = models.CharField(max_length=20)
+
+================================================================================
+                                views.py
+
+from django.shortcuts import render,render_to_response,redirect
+from.models import *
+from.forms import *
+
+def home(request):
+    data = Home.objects.all()
+    print(data)
+    return render(request,'home.html',{"data":data})
+
+
+def remove_items(request):
+    if request.method == 'POST':
+        form = Homeform()
+        inventory = Home.objects.all()
+        item_id = int(request.POST.get('item_id'))
+        item = Home.objects.get(id=item_id)
+        item.delete()
+
+
+        return render(request,'home.html', {'form':form})
+================================================================================
+                            Forms.py
+
+from django import forms
+from.models import *
+
+class Homeform(forms.ModelForm):
+    class Meta:
+        model = Home
+        fields = '__all__'
+
+================================================================================
+                                Admin.py
+from django.contrib import admin
+
+from.models import *
+
+admin.site.register(Home)
+
+================================================================================
+                                home.html
+
+{% for data in data.all %}
+
+ <form action="" method="post">
+		           {% csrf_token %}
+     <h1>{{data.id}}</h1>
+     <h1>{{data.name}}</h1>
+				<input type="hidden" name="item_id" value="{{data.id}}" />
+			       <input type="submit" value="delete item">
+ </form>
+
+
+
+{% endfor %}
+================================================================================
+                                Urls.py
+
+from django.urls import path
+from.import views
+
+urlpatterns = [
+    path("",views.home,name="home"),
+    path("remove_items/",views.remove_items,name="remove_items")
+]
+
+================================================================================

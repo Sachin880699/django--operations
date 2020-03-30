@@ -1,0 +1,28 @@
+--------------mainproject/templates/base.html---------
+
+
+header 
+
+{% block content %}
+
+
+{% endblock %}
+
+footer
+
+-----------------------------settings.py--------------------------
+
+'DIRS': ['project/templates'],
+
+
+
+-------------------home.html---------------------
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+{% endblock %}

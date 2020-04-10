@@ -1,0 +1,11 @@
+--------------settings.py----------------------------
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['127.0.0.1']
+
+
+------------------myapp/templates/404.html------
+
+<h1>404 page not found </h1>
+

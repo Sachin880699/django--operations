@@ -1,0 +1,24 @@
+-----------settings.py-------------
+
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media') 
+MEDIA_URL = '/media/'
+
+
+-----------models.py------------
+
+class Hotel(models.Model): 
+    
+    hotel_Main_Img = models.ImageField(upload_to='images/') 
+    
+---------------main/urls.py------------
+
+
+from django.conf import settings 
+from django.conf.urls.static import static 
+
+[
+]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
+
+
+

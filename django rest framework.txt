@@ -1,0 +1,169 @@
+----------------set all django file------
+----------------create models in model.py------
+
+create new file 
+--------serializers.py--------------
+
+
+from rest_framework import serializers
+from.models import *
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+        
+        
+-------------------------views.py-----------------
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from.models import *
+from.serializers import ProductSerializer
+
+@api_view(['get'])
+def home(request):
+    if request.method=='GET':
+        obj = Product.objects.all()
+        serializer = ProductSerializer(obj,many=True)
+    return Response(serializer.data)
+    
+    
+----------------------now just run---------------------
+in our app how to add new product
+
+
+--------------------------views.py---------------------------------
+from django.shortcuts import render,HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from.models import *
+from.serializers import ProductSerializer
+from rest_framework import status
+@api_view(['get','POST'])
+def home(request):
+    if request.method=='GET':
+        obj = Product.objects.all()
+        serializer = ProductSerializer(obj,many=True)
+        return Response(serializer.data)
+
+    elif request.method=='POST':
+        serializer = ProductSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+--------------id wise product sort karnyasathi-----------
+
+-----------------------views.py--------------
+
+
+@api_view(['GET'])
+def product_detail(request,pk):
+    try:
+        obj = Product.objects.get(id=pk)
+    except Product.DoesNorExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = ProductSerializer(obj)
+    return Response(serializer.data)
+    
+    
+-------------------------urls.py-------------------
+from django.urls import path
+from.import views
+
+urlpatterns = [
+    path("product/",views.home,name='home'),
+    path("product/<int:pk>",views.product_detail)
+]
+
+---------------------in browser---------------
+http://127.0.0.1:8000/product/1
+
+===================================================================
+===============================how to update record==========
+
+============================views.py==========================================
+@api_view(['GET','PUT'])
+def product_detail(request,pk):
+    try:
+        obj = Product.objects.get(id=pk)
+    except Product.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method=='GET':
+
+
+        serializer = ProductSerializer(obj)
+        return Response(serializer.data)
+    elif request.method=='PUT':
+        serializer = ProductSerializer(obj,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        
+==========================browser========================
+http://127.0.0.1:8000/product/2
+
+
+
+==========================for delete==================
+
+=====================views.py==========
+
+from django.shortcuts import render,HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from.models import *
+from.serializers import ProductSerializer
+from rest_framework import status
+
+@api_view(['get','POST','DELETE'])
+def home(request):
+    if request.method=='GET':
+        obj = Product.objects.all()
+        serializer = ProductSerializer(obj,many=True)
+        return Response(serializer.data)
+
+    elif request.method=='POST':
+        serializer = ProductSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+#========================from here delete = =============
+
+    elif request.method == 'DELETE':
+        count = Product.objects.all().delete()
+        return Response({'message': '{} Tutorials were deleted successfully!'.format(count[0])},
+                            status=status.HTTP_204_NO_CONTENT)
+#=========================to here=================================================
+
+@api_view(['GET','PUT','DELETE'])
+def product_detail(request,pk):
+    try:
+        obj = Product.objects.get(id=pk)
+    except Product.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method=='GET':
+
+
+        serializer = ProductSerializer(obj)
+        return Response(serializer.data)
+    elif request.method=='PUT':
+        serializer = ProductSerializer(obj,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+#========================from here delete = =============
+
+    elif request.method == 'DELETE':
+        obj = Product.objects.get(id=pk)
+        obj.delete()
+        return Response( status=status.HTTP_204_NO_CONTENT)
+#======================to here=============================

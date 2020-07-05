@@ -1,0 +1,42 @@
+------------------------views.py---------------------------
+from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
+from django.utils import timezone
+
+
+
+
+def adminlist(request):
+    users = User.objects.all()
+    active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
+    user_id_list = []
+    for session in active_sessions:
+        data = session.get_decoded()
+        user_id_list.append(data.get('_auth_user_id', None))
+    res = []
+    for val in user_id_list:
+        if val != None:
+            res.append(val)
+
+            # printing result
+    user_id_list =  set(res)
+    user_id_list = list(user_id_list)
+    user_id_list = [int(i) for i in user_id_list]
+    return render(request,'admin_list.html',{'users':users,'user_id_list':user_id_list})
+
+--------------------------admin_list.html----------------
+
+
+<h1>Admin list & live online user</h1>
+
+{% for user in users %}
+
+<h1>{{user.username}}</h1><h2 style="color:green;">
+{% if user.id in user_id_list %}
+    Online</h2>
+    {% else %}
+  <h2 style="color:red;">  Offline
+</h2>
+{% endif %}
+
+{% endfor %}

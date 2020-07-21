@@ -1,0 +1,20 @@
+
+def create_admin_user(request):
+    if request.method == 'POST' :
+        first_name = request.POST.get('firstname')
+        last_name = request.POST.get("lastname")
+        email = request.POST.get("username")
+        password = request.POST.get("password1")
+        u, created = User.objects.get_or_create(email=email)
+        u.is_active = True
+        u.is_staff = True
+        u.is_superuser = False
+        u.first_name = first_name
+        u.last_name = last_name
+        u.set_password(password)
+        u.username = email
+        u.save()
+        # custom_user = Custom_User.objects.create(user=u)
+        
+        # custom_user.save()
+    return render(request,'create_admin_user.html')

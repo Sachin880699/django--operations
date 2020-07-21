@@ -1,0 +1,21 @@
+def search(request):
+    disability_list = DisabilityList.objects.all()
+    city_list = CityList.objects.all()
+    if request.method == 'GET':
+        query= request.GET.get('inputsearch') or request.GET.get('cityinput') or request.GET.get('disabilityinput')
+        
+        
+        if query is not None:
+            lookups= Q(name_of_the_organition__icontains=query) | Q(city__icontains=query ) | Q(disability_work_area__icontains=query) 
+            results= NGODetails.objects.filter(lookups).distinct()
+            context={
+                'results': results,
+                "disability_list":disability_list,
+                'city_list':city_list
+            }
+            return render(request, 'search.html', context)
+    context={
+        "disability_list":disability_list,
+        'city_list':city_list
+    }
+    return render(request,'search.html',context)

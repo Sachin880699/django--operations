@@ -1,0 +1,19 @@
+def report(request):
+    if request.method=='POST' and 'enquiry_list_button' in request.POST:
+        
+        request.session['enquiry_start_date'] = 'enquiry_start_date'
+        request.session['enquiry_end_date'] = 'enquiry_end_date'
+        if enquiry_start_date and enquiry_end_date:
+        
+            return enquiry_export_users_csv(request)
+
+
+    return render(request,'report.html')
+
+
+def enquiry_export_users_csv(request):
+    enquiry_start_date = request.session['enquiry_start_date']
+    enquiry_end_date = request.session['enquiry_end_date']
+    
+    return response
+

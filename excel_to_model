@@ -1,0 +1,31 @@
+    import xlrd     
+      
+    loc = ("/home/sachin/Downloads/ngo.csv")     
+    with open(loc) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            
+
+            
+            created = NGODetails.objects.get_or_create(
+                name_of_the_organition=row[1],
+                reg_no = row[9],
+                facility_details = row[11],
+                address = row[3],
+                email = row[7],
+                website = row[6],
+                contact_person_name_one = row[5],
+                contact_one = row[4],
+                eligibility = row[13],
+                current_benefeceries =row[14],
+                extra_work = row[16],
+                reg_date = row[8],
+                city = row[2],
+                zip  ='414213',
+                state = 'Maharashtra',
+                disability_work_area = row[10],
+                pamplts_brochure = row[18],
+                information_source = row[17]
+                
+                )# ,
+

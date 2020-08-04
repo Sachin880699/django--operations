@@ -1,0 +1,53 @@
+def import_ngo_data(request):      
+    loc = ("/var/www/help_life/help_life/ngo.xlsx")
+    wb = xlrd.open_workbook(loc)
+    for sheet_index in range(7):
+        sheet = wb.sheet_by_index(sheet_index)
+
+        for row in range(1, sheet.nrows): 
+            data = sheet.row_values(row)
+            disability = data[10].split(',')
+            dis_list = []
+            for rec in disability:
+                obj, created =DisabilityList.objects.get_or_create(disability=rec.strip())
+                dis_list.append(obj.id)
+
+            city_v, created = CityList.objects.get_or_create(city=data[2].strip())
+            
+            ngo, created = NGODetails.objects.get_or_create(
+                name_of_the_organition=data[1],
+                reg_no = data[9],
+                facility_details = data[11],
+                address = data[3],
+                email = data[7],
+                website = data[6],
+                contact_person_name_one = data[5],
+                contact_one = data[4],
+                eligibility = data[13],
+                current_benefeceries =data[14],
+                extra_work = data[16],
+                reg_date = data[8],
+                city = city_v,
+                zip  ='414213',
+                state = 'Maharashtra',
+                pamplts_brochure = data[18],
+                information_source = data[17],
+                charges = data[15]
+                )
+            for work_area in dis_list:
+                ngo.disability_work_area.add(work_area)
+
+            ngo_recs = NGODetails.objects.all()
+            gmaps = googlemaps.Client(key='')
+            
+            for rec in ngo_recs:
+                geocode_result = gmaps.geocode(str(rec.address))
+                lat = geocode_result[0]['geometry']['location']['lat']
+                long = geocode_result[0]['geometry']['location']['lng']
+
+                rec.latitude = lat
+                rec.longitude = long
+                rec.save()
+
+
+    return redirect('ngo_list')

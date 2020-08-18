@@ -1,0 +1,5 @@
+
+Login with facebook ,tweeter , and github
+
+
+https://studygyaan.com/django/how-to-add-social-login-to-django

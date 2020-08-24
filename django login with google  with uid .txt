@@ -2,7 +2,7 @@
 
 https://www.youtube.com/watch?v=dviENt4tViI
 
-
+uid = request.user.socialaccount_set.all()[0].uid   #This is in views.py file
 -----------------------------------------------------------------------
 
 

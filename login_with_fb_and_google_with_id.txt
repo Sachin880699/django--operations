@@ -1,0 +1,121 @@
+===========views.py===================
+from django.dispatch import receiver
+from allauth.socialaccount.signals import pre_social_login
+from allauth.socialaccount.models import SocialAccount
+from allauth.account.adapter import DefaultAccountAdapter
+from django.contrib import auth
+from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
+from accounts.models import User
+
+
+@receiver(pre_social_login)
+def handleDuplicateEmail(sender, request, sociallogin, **kwargs):
+    data = sociallogin.account.extra_data
+    print(sociallogin.account.extra_data.get('email'))
+    if User.objects.filter(email=data.get('email')).exists():
+        user = User.objects.get(email=data.get('email'))
+        User.objects.filter(email=data.get('email')).update(social_id=data.get('id'))
+        if not SocialAccount.objects.filter(user=user, provider=sociallogin.account.provider).exists():
+            SocialAccount.objects.create(user=user, provider=sociallogin.account.provider, uid=data.get('id'),
+                                         extra_data=data)
+        if sociallogin.account.provider == 'google':
+            user.login_type = 'gmail'
+            user.save()
+        auth.login(request, user, backend='what2do.backends.backends')
+        return redirect('/')
+    else:
+        print("Non-Existing Account")
+
+
+def login_redirect(request):
+    if request.user.socialaccount_set.filter():
+        data = request.user.socialaccount_set.filter()[0]
+        print(request.user.socialaccount_set.filter()[0].uid)
+        User.objects.filter(id=request.user.id).update(social_id=data.uid)
+        if data.provider == 'google':
+            request.user.login_type = 'gmail'
+            request.user.save()
+    return redirect('/')
+
+
+=====================================settings.py======================
+         Add this in install app
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'django.contrib.sites'
+
+-----------------Add this in middle ware-------------------
+
+	  'django.contrib.auth.middleware.AuthenticationMiddleware',
+          'django.contrib.messages.middleware.MessageMiddleware',
+          'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+---------------------middle in the page add this one
+
+
+ACCOUNT_AUTHENTICATION_METHOD = 'id'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+SITE_ID = 4
+# LOGIN_REDIRECT_URL = 'login_redirect/'
+LOGIN_URL = 'login_redirect'
+LOGOUT_URL = 'login_redirect'
+LOGIN_REDIRECT_URL = 'login_redirect'
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook':
+        {'METHOD': 'oauth2',
+         'SCOPE': ['email', 'public_profile', 'user_friends'],
+         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+         'FIELDS': [
+             'id',
+             'email',
+             'name',
+             'first_name',
+             'last_name',
+             'verified',
+             'locale',
+             'timezone',
+             'link',
+             'gender',
+             'updated_time'],
+         'EXCHANGE_TOKEN': True,
+         'LOCALE_FUNC': lambda request: 'kr_KR',
+         'VERIFIED_EMAIL': False,
+         'VERSION': 'v2.4'}
+}
+
+======================================home.html===========================
+    {% load socialaccount %}
+    {% providers_media_js %}
+
+
+
+ <div class="icon-bar">
+            <a href="{% provider_login_url "facebook" method="js_sdk" %}" class="facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+            <a href="{% provider_login_url 'google' %}" class="youtube"><i class="fa fa-google"></i></a>
+            <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
+
+        </div>
+
+

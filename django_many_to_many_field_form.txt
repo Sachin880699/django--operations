@@ -1,0 +1,89 @@
+--------------------------------models.py----------------------------------
+class VendorDetails(models.Model):
+    user = models.ForeignKey(User, related_name='vendor_details', null=True, blank=True, on_delete=models.CASCADE)
+    business_name = models.CharField(max_length=250, null=True, blank=True)
+    business_address = models.CharField(max_length=500, null=True, blank=True)
+    business_description = models.TextField(null=True, blank=True)
+
+    transports_available = models.ManyToManyField(TransportType, related_name='transports', null=True, blank=True)
+    equipments_available = models.ManyToManyField(EquipmentsType, related_name='equipments', null=True, blank=True)
+    accommodations_available = models.ManyToManyField(AccommodationType, related_name='accommodations', null=True,
+                                                      blank=True)
+    specialisations = models.ManyToManyField(ThemePackage, related_name='specialisations', null=True, blank=True)
+    accommodations_ratings = MultiSelectField(choices=PACKAGE_RATINGS, null=True, blank=True)
+
+    admin_approval = models.BooleanField(default=False)
+============================================views.py==========================================
+
+def vendor_details(request,id):
+    vendor_info = VendorDetails.objects.get(id=id)
+    transport_list = list(vendor_info.transports_available.filter().values_list('id', flat=True))
+    transport_type = TransportType.objects.all()
+    equipment_list = list(vendor_info.equipments_available.filter().values_list('id', flat=True))
+    equipments_type = EquipmentsType.objects.all()
+    accommodation_list = list(vendor_info.accommodations_available.filter().values_list('id', flat=True))
+    accommodation_type = AccommodationType.objects.all()
+    specialisation_list = list(vendor_info.specialisations.filter().values_list('id', flat=True))
+    specialisations = ThemePackage.objects.all()
+
+    context = {
+        'vendor_info':vendor_info,
+        'transport_type':transport_type,
+        "equipments_type":equipments_type,
+        'accommodation_type':accommodation_type,
+        "specialisations":specialisations,
+        "transport_list": transport_list,
+        "equipment_list": equipment_list,
+        "accommodation_list": accommodation_list,
+        "specialisation_list": specialisation_list
+    }
+    return render(request,'vendor_details.html',context)
+
+=======================================vendors.html=============================================
+						{% for obj in transport_type %}
+                                                <div class="col-md-4">
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" name="transports_available"
+                                                               value="{{ obj.id }}" {% if obj.id in transport_list %}
+                                                               checked {% endif %}>
+                                                        {{ obj.name }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+
+
+
+
+
+
+						{% for obj in equipments_type %}
+                                                <div class="col-md-4">
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" name="equipments_available"
+                                                               value="{{ obj.id }}" {% if obj.id in equipment_list %}
+                                                               checked {% endif %}>
+                                                        {{ obj.name }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+
+
+
+
+						{% for obj in accommodation_type %}
+                                                <div class="col-md-4">
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" name="accommodations_available"
+                                                               value="{{ obj.id }}"
+                                                                {% if obj.id in accommodation_list %}
+                                                               checked {% endif %}>
+                                                        {{ obj.name }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+
+
+
+
+
+

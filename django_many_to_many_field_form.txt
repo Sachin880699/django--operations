@@ -1,3 +1,7 @@
+
+Stackoverflow = https://stackoverflow.com/questions/10366045/django-how-to-save-data-to-manytomanyfield
+
+
 --------------------------------models.py----------------------------------
 class VendorDetails(models.Model):
     user = models.ForeignKey(User, related_name='vendor_details', null=True, blank=True, on_delete=models.CASCADE)

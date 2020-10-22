@@ -1,0 +1,18 @@
+<select name="package_name"  class="form-control" id="exampleFormControlSelect1" required>
+                            <optgroup label="Packages">
+                                {% for package in package %}
+                                sachin
+                                    <option value="{{ package.id }}" data-type="Package">{{ package.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Places">
+                                {% for place in places %}
+                                    <option value="{{ place.id }}" data-type="Place">{{ place.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Activities">
+                                {% for activity in activities %}
+                                    <option value="{{ activity.id }}" data-type="Activity">{{ activity.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>

@@ -1,0 +1,28 @@
+https://www.nuomiphp.com/eplan/en/112378.html
+
+
+
+
+
+
+
+<div id="gallery" class="carousel slide carousel-fade" data-ride="carousel" data-aos="fade-up" data-aos-delay="300">
+
+      <ul class="carousel-indicators" >
+        <li data-target="#gallery" data-slide-to="0" class="active"></li>
+        <li data-target="#gallery" data-slide-to="1"></li>
+        <li data-target="#gallery" data-slide-to="2"></li>
+      </ul>
+
+      <div class="carousel-inner">
+          {% for img in carousel %}  
+        <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}" data-interval="100">
+
+          <img src="{{img.Image.url}}" class="d-block  w-100" alt="...">
+          <div class="carousel-caption d-none d-md-block rounded position-absolute bg-custom">
+              <h5>{{img.Img_title}}</h5>
+              <p>{{img.Img_desc}}</p>
+            </div>
+        </div>
+        {% endfor %}  
+</div>

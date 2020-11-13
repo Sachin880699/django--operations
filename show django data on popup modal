@@ -1,0 +1,43 @@
+<!-- Create a unique link for every building -->
+{% for building in buildings %}
+<a href="#"
+    class="building-link"
+    data-toggle="modal"
+    data-target="#building-modal"
+    data-img="{{ building.img.url }}"
+    data-description="{{ building.short_description }}"
+    data-name="{{ building.name }}">
+    {{ building.name }}
+</a>
+{% endfor %}
+
+<!-- This is our blank modal, with ids for the values to be injected -->
+<div class="modal fade mymodal in " id="building-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+ aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="building-name"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="building-description"></p>
+                <img id="building-img" src=""/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- When a link is clicked, grab all the data values and pop them inro the modal -->
+<script>
+$('.building-link').click(function(){
+    $('#building-name').html($(this).data('name'));
+    $('#building-description').html($(this).data('description'));
+    $('#building-img').src($(this).data('img'));
+});
+</script>

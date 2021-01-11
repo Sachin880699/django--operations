@@ -1,0 +1,26 @@
+======================update postgresql django table ==========
+
+-----Open Postgres-------
+
+1 ) sudo -i -u postgres
+
+
+2 ) psql
+
+3 ) \l                   (shwo list of databasee)
+
+4 ) \c postgres;         (out put will show you are connected to the postgresq )
+
+5 ) \c roosket;		 ( output you connected to the roosket )
+
+
+6 ) SELECT * FROM packages_booking;  
+
+7 ) SELECT id FROM packages_booking;      (package it's app name and booking is model and it wiil show all id)
+
+8 ) UPDATE packages_booking SET created_at="2021-08-10" WHERE id=RSKT11012021XJ1F1007; 
+
+
+
+====================================
+created_at it is a fields

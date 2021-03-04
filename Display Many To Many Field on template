@@ -1,6 +1,15 @@
-==================================models.py===============================
-themes = models.ManyToManyField(ThemePackage, null=True, blank=True, related_name="package_theme")
+class Area(models.Model):
+    name = models.CharField(max_length=100, primary_key=True)
+    def __unicode__(self):
+        return self.name
+class Place(models.Model):
+    id = models.IntegerField(primary_key=True) 
+    name = models.CharField(max_length=100, primary_key=True)
+    area = models.ManyToManyField(Area,related_name='area')
+    
+======================== template=================
 
-
-=========================================views.py======================
-packages = Package.objects.filter(status=True, themes__id=theme_id, type="Admin") 
+{% for place in places %}
+    Name: {{ place.name }}<br/>
+    Area: <br/>{% for area in place.area.all %}{{ area }}<br/>{% endfor %}
+{% endfor %}

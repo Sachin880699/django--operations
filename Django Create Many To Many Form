@@ -1,0 +1,22 @@
+class Area(models.Model):
+    name = models.CharField(max_length=100, primary_key=True)
+    def __unicode__(self):
+        return self.name
+class Place(models.Model):
+    id = models.IntegerField(primary_key=True) 
+    name = models.CharField(max_length=100, primary_key=True)
+    area = models.ManyToManyField(Area,related_name='area')
+    
+ =====================views.py===============
+ 
+ def home(request):
+    
+    name = request.POST.get("name")
+    id = request.POST.get("id")
+    
+    area_name = request.POST.get('area_name')
+    
+   place_obj = Place.objects.create(id = id , name = name)
+   area_obj = Area.objects.create(area_name=area_name)
+   
+   place_obj.area.add(area_obj)

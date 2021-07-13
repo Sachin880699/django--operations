@@ -1,0 +1,2 @@
+
+pg_restore --verbose --no-acl --no-owner -h localhost -U postgres -d database_db backup_db.sql

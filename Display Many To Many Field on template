@@ -13,3 +13,4 @@ class Place(models.Model):
     Name: {{ place.name }}<br/>
     Area: <br/>{% for area in place.area.all %}{{ area }}<br/>{% endfor %}
 {% endfor %}
+=============

@@ -1,0 +1,7 @@
+dump ghyla - 
+
+pg_dump -U postgres -h localhost db_name > name.sql
+
+tya nantr db create karycha ek suppose xyz_name create kela
+
+psql xyz_name < name.sql

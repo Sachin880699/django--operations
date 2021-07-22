@@ -1,0 +1,16 @@
+https://serverfault.com/questions/1049330/error-conflicting-requests-in-centos-8-package-installation
+
+
+
+sudo yum install dnf-plugins-core
+sudo yum config-manager --set-enabled powertools
+
+sudo yum install gdal-devel
+
+
+
+
+
+
+
+https://computingforgeeks.com/how-to-install-postgis-on-centos-7/

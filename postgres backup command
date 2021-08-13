@@ -1,0 +1,3 @@
+pg_dum -U postgres -W -h localhost bharatkrushi_db >file.sql
+
+psql -U postgres -W -h localhost bks_dev2 < file.sql

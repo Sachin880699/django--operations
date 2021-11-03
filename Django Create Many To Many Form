@@ -7,7 +7,7 @@ class Place(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
     area = models.ManyToManyField(Area,related_name='area')
     
- =====================views.py=====================
+ =====================views.py=======================
  
  def home(request):
     

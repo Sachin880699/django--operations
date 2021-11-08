@@ -15,3 +15,4 @@ Connect to specific database
 7 ) CREATE EXTENSION postgis;
 8 ) CREATE EXTENSION postgis_topology;
 9 ) \q
+==

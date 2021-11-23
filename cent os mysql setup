@@ -8,3 +8,27 @@ sudo yum install -y python36-devel mysql-devel gcc
 sudo ln -s /usr/lib64/libmariadbclient.a /usr/lib64/libmariadb.a
 
 pip install mysqlclient
+
+
+
+
+
+
+================== using mysql connection ====
+
+
+
+DATABASES = {
+    'default': {
+                'ENGINE': 'mysql.connector.django',
+                'HOST': 'xxxxxx.compute.amazonaws.com',
+                'PORT': '3306',
+                'NAME': 'xxxxx',
+                'USER': 'xxxxx',
+                'PASSWORD': 'xxxxxx',
+                'init_command': "SET sql_modes = 'STRICT_TRANS_TABLES'",
+    },
+}
+
+
+pip install mysql-connector-python

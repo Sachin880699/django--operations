@@ -1,0 +1,10 @@
+
+
+yum install mysql
+sudo yum install python-pip python-devel gcc mariadb-server mariadb-devel
+
+sudo yum install -y python36-devel mysql-devel gcc
+
+sudo ln -s /usr/lib64/libmariadbclient.a /usr/lib64/libmariadb.a
+
+pip install mysqlclient

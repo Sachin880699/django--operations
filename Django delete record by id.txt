@@ -7,7 +7,7 @@ class Home(models.Model):
     id = models.IntegerField(primary_key=1)
     name = models.CharField(max_length=20)
 
-================================================================================
+=======================================================
                                 views.py
 
 from django.shortcuts import render,render_to_response,redirect
@@ -30,7 +30,7 @@ def remove_items(request):
 
 
         return render(request,'home.html', {'form':form})
-==================================================================================
+=============================================================
                             Forms.py
 
 from django import forms
@@ -41,7 +41,7 @@ class Homeform(forms.ModelForm):
         model = Home
         fields = '__all__'
 
-================================================================================
+==============================================================
                                 Admin.py
 from django.contrib import admin
 
@@ -49,7 +49,7 @@ from.models import *
 
 admin.site.register(Home)
 
-================================================================================
+=============================================================
                                 home.html
 
 {% for data in data.all %}

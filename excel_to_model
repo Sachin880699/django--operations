@@ -1,4 +1,5 @@
-    import xlrd     
+#=================================================
+import xlrd     
       
     loc = ("/home/sachin/Downloads/ngo.csv")     
     with open(loc) as f:

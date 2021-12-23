@@ -1,0 +1,31 @@
+pip install django-auto-logout
+
+
+
+============= Settings.py==========
+
+MIDDLEWARE = [
+    # append after default middlewares
+    'django_auto_logout.middleware.auto_logout',
+]
+
+
+===== khalchi line kiwa===
+
+
+AUTO_LOGOUT = {'IDLE_TIME': 600}  # logout after 10 minutes of downtime
+
+
+= direct we can add in views.py file ===========
+
+from datetime import timedelta
+
+AUTO_LOGOUT = {'IDLE_TIME': timedelta(minutes=10)}
+
+============================================================================
+========================== Refrance   ======================================
+============================================================================
+
+
+https://pythonrepo.com/repo/bugov-django-auto-logout-python-django-utilities
+

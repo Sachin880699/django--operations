@@ -1,0 +1,79 @@
+import io
+import xlsxwriter
+from django.http import FileResponse
+
+
+def project_wise_report(request):
+    if request.method == 'POST':
+        project_id = request.POST.get("project_id")
+        start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date")
+        startdate = end_date
+        end_date = pd.to_datetime(startdate) + pd.DateOffset(days=1)
+        project_obj = Project.objects.get(id=project_id)
+        users = DailyTask.objects.filter(created_at__gte=start_date, created_at__lt=end_date,
+                                         project=project_obj).values_list(
+            "project__project_name", "employee__name", "task_description", "task_date", "end_task_date",
+            'estimated_time', 'actual_time', 'employee_comment', 'manager_comment',
+            'task_status', 'task_type')
+        buffer = io.BytesIO()
+        workbook = xlsxwriter.Workbook(buffer)
+        row = 1
+        col = 0
+        worksheet1 = workbook.add_worksheet()
+        worksheet1.write(0, 0, "Member Name")
+        worksheet1.write(0, 1, "Project Name")
+        worksheet1.write(0, 2, "Task")
+        worksheet1.write(0, 3, "Task Start Date")
+        worksheet1.write(0, 4, "Task End Date")
+        worksheet1.write(0, 5, "Estimated Time")
+        worksheet1.write(0, 6, "Actual Time")
+        worksheet1.write(0, 7, "Member Comment")
+        worksheet1.write(0, 8, "Manager Comment")
+        worksheet1.write(0, 9, "Task Status")
+        worksheet1.write(0, 10, "Task Type")
+        count = 1
+        total_estimated_time = []
+        total_actual_time = []
+        for res in users:
+            try:
+                if str(res[4]) == "None":
+                    task_end_date = ""
+                else:
+                    task_end_date = str(res[4])
+            except:
+                task_end_date = ""
+            try:
+                estimate_time = float(res[5].replace(":", "."))
+                if res[6] == None and " ":
+                    actual_time = ""
+                else:
+                    actual_time = res[6].replace(":", ".")
+                    actual_time = float(actual_time)
+            except:
+                actual_time = ""
+            worksheet1.write(row, col, res[0])  # writing headers
+            worksheet1.write(row, col + 1, res[1])
+            worksheet1.write(row, col + 2, res[2])
+            worksheet1.write(row, col + 3, str(res[3]))
+            worksheet1.write(row, col + 4, task_end_date)
+            worksheet1.write(row, col + 5, estimate_time)
+            worksheet1.write(row, col + 6, actual_time)
+            worksheet1.write(row, col + 7, res[7])
+            worksheet1.write(row, col + 8, res[8])
+            worksheet1.write(row, col + 9, res[9])
+            worksheet1.write(row, col + 10, res[10])
+            total_estimated_time.append(estimate_time)
+            total_actual_time.append(actual_time)
+            row += 1
+            count = count+1
+        total_actual_time = [x for x in total_actual_time if x]
+        total_estimated_time = sum(total_estimated_time)
+        total_actual_time    = sum(total_actual_time)
+        worksheet1.write(count + 3, 6, total_actual_time)
+        worksheet1.write(count + 3, 5, total_estimated_time)
+        worksheet1.write(count + 4, 6, "Total Actual Time")
+        worksheet1.write(count + 4, 5, "Total Estimated Time")
+        workbook.close()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='project_wise_report.xlsx')

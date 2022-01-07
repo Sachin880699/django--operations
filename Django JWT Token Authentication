@@ -107,6 +107,13 @@ class GenerateToken(generics.GenericAPIView):
     
     
     
+================================== Testing In Postman ============
+
+header madhe
+
+Key                  Value
+
+Authorization        Bearer access_token_here
     
     
     

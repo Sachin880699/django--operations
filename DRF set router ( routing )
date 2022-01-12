@@ -1,0 +1,52 @@
+=================== Urls.py ================
+
+from rest_framework import routers
+from django.conf.urls import url, include
+from api.views import *
+from accounts import views as accounts_views
+
+router = routers.DefaultRouter()
+
+router.register(r'currency_converter', CurrencyConverterView, basename='currency_converter')
+
+
+urlpatterns = [
+    url(r'^', include(router.urls)),
+    url(r'^login/$', LoginView.as_view(), name="login"),
+]
+
+
+======================== views.py ==============
+
+from rest_framework.response import Response
+from rest_framework import viewsets, status, permissions
+from rest_framework.generics import CreateAPIView
+from rest_framework.throttling import AnonRateThrottle
+
+User = get_user_model()
+
+
+
+class CurrencyConverterView(viewsets.ModelViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        source_currency     = data['source_currency']
+        target_currency     = data['target_currency']
+        amount              = data['amount']
+        try:
+            URL = f"https://www.google.com/search?q={source_currency}={amount}+to+{target_currency}"
+            r = requests.get(URL)
+            soup = BeautifulSoup(r.content,'html5lib')
+            amount = soup.find('div', attrs={'class': 'BNeawe iBp4i AP7Wnd'}).text.split(' ')[0]
+        except:
+            URL = f"https://www.xe.com/currencyconverter/convert/?Amount={amount}&From={source_currency}&To={target_currency}"
+            r = requests.get(URL)
+            soup = BeautifulSoup(r.content,'html5lib')
+            amount = soup.find('p', attrs={"class": "result__BigRate-sc-1bsijpp-1 iGrAod"}).text.split(' ')[0]
+        context = {
+            'status': success,
+            "amount":amount
+        }
+        return Response(context)

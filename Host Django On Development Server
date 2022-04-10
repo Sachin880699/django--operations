@@ -1,0 +1,19 @@
+1 ) Login with ssh on sever
+CMD : ssh root@192.168.1.52
+
+2 ) Django Clone from GIT or SVN
+CMD : git clone https://github.com/Sachin880699/bootie-shoes-django-backend-with-api
+
+3 ) need to create virtualenv 
+CMD : python3 -m venv env_name
+
+4 ) Activate virtualenv
+CMD : cd env_name/bin && source activate
+
+5 ) install screen
+CMD : sudo apt install screen
+
+6 ) Then Run Development server
+CMD : screen -d -m python manage.py runserver 192.168.1.52:8000
+
+7 ) Now you can access django server by ( 192.168.1.52:8000 ) IP

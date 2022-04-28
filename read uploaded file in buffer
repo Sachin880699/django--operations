@@ -1,0 +1,10 @@
+++++++++++++++++++++++++++++++ views.py ++++++++++++++++
+input_file          = request.FILES.getlist('input_file')
+
+for res in input_file:
+      document_content = res.read().decode()
+      
+      
++++++++++++++++++ home.html +++++++++++
+
+<input type="file" id="files" name="input_file" multiple="multiple"  mozdirectory required class="form-control"  style="width:74%;">

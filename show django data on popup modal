@@ -1,4 +1,8 @@
 <!-- Create a unique link for every building -->
+
+This is message
+
+
 {% for building in buildings %}
 <a href="#"
     class="building-link"

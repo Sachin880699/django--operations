@@ -1,0 +1,25 @@
+pip install django-crontab
+
+_______________________ settings.py _____________
+
+INSTALLED_APPS = [
+    "django_crontab",
+    'admin_panel',
+]
+
+
+
+CRONJOBS = [
+    ('*/5 * * * *', 'admin_panel.views.web_mail_script_cron_job','>> /home/sachinpawar/Desktop/warning.log')
+]
+
+
+
+
+___________________ views.py ___________________
+
+def web_mail_script_cron_job():
+
+    # DataLog.objects.create(log_error = "Testing")
+    
+    print("__ Hello __")

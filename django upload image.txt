@@ -21,4 +21,16 @@ from django.conf.urls.static import static
 
 
 
++++++++++++++++++++++++++++++ views.py+++++++++++++++++++++++++++
+
+
+file = requst.FILES["file_name"]
+
+
+_________________________--- home.html ________________
+
+
+<input type="file" name="file_name" />
+
+
 
